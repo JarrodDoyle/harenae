@@ -22,11 +22,10 @@ public class World
             _grid[x, y] = new Particle();
     }
 
-    public void SetSand(int x, int y)
+    public void SetParticle(int x, int y, ParticleType particleType)
     {
         if (!PosInWorld(x, y)) return;
-        _grid[x, y].Type = ParticleType.Sand;
-        SimulationRenderer.EnqueueAction(() => Raylib.DrawPixel(x, y, Color.GOLD));
+        _grid[x, y].Type = particleType;
     }
 
     public void Update()
@@ -51,12 +50,24 @@ public class World
                         cell.Updated = true;
                         break;
                     case ParticleType.Sand:
+                        if (GetParticle(x, y + 1) is {Type: ParticleType.Air or ParticleType.Water})
+                            MoveParticle(x, y, x, y + 1);
+                        if (GetParticle(x - 1, y + 1) is {Type: ParticleType.Air or ParticleType.Water})
+                            MoveParticle(x, y, x - 1, y + 1);
+                        if (GetParticle(x + 1, y + 1) is {Type: ParticleType.Air or ParticleType.Water})
+                            MoveParticle(x, y, x + 1, y + 1);
+                        break;
+                    case ParticleType.Water:
                         if (GetParticle(x, y + 1) is {Type: ParticleType.Air})
                             MoveParticle(x, y, x, y + 1);
                         if (GetParticle(x - 1, y + 1) is {Type: ParticleType.Air})
                             MoveParticle(x, y, x - 1, y + 1);
                         if (GetParticle(x + 1, y + 1) is {Type: ParticleType.Air})
                             MoveParticle(x, y, x + 1, y + 1);
+                        if (GetParticle(x - 1, y) is {Type: ParticleType.Air})
+                            MoveParticle(x, y, x - 1, y);
+                        if (GetParticle(x + 1, y) is {Type: ParticleType.Air})
+                            MoveParticle(x, y, x + 1, y);
                         break;
                     default:
                         Console.WriteLine("Unknown cell type.");
@@ -72,15 +83,16 @@ public class World
     {
         if (!PosInWorld(x1, y1) || !PosInWorld(x2, y2)) return;
 
-        var c2Type = _grid[x1, y1].Type;
-        _grid[x1, y1].Type = ParticleType.Air;
-        _grid[x2, y2].Type = c2Type;
+        var c1Type = _grid[x1, y1].Type;
+        var c2Type = _grid[x2, y2].Type;
+        _grid[x1, y1].Type = c2Type;
+        _grid[x2, y2].Type = c1Type;
         _grid[x1, y1].Updated = true;
         _grid[x2, y2].Updated = true;
         SimulationRenderer.EnqueueAction(() =>
         {
-            Raylib.DrawPixel(x1, y1, Particle.Colors[(int) ParticleType.Air]);
-            Raylib.DrawPixel(x2, y2, Particle.Colors[(int) c2Type]);
+            Raylib.DrawPixel(x1, y1, Particle.Colors[(int) c2Type]);
+            Raylib.DrawPixel(x2, y2, Particle.Colors[(int) c1Type]);
         });
     }
 

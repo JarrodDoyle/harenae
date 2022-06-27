@@ -24,7 +24,8 @@ internal static class Program
         foreach (BaseUiLayer layer in uiLayers)
             layer.Attach();
 
-        var world = new World(320, 180, 60);
+        var particleType = ParticleType.Sand;
+        var world = new World(320, 180, 144);
         SimulationRenderer.EnqueueAction(() => Raylib.ClearBackground(Color.BLACK));
 
         while (!Raylib.WindowShouldClose())
@@ -37,8 +38,12 @@ internal static class Program
                 var scale = (int) Math.Floor(Math.Min(Raylib.GetScreenWidth() / 320.0f,
                     Raylib.GetScreenHeight() / 180.0f));
                 var mousePos = Raylib.GetMousePosition() / scale;
-                world.SetSand((int) mousePos.X, (int) mousePos.Y);
+                world.SetParticle((int) mousePos.X, (int) mousePos.Y, particleType);
             }
+
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_ONE)) particleType = ParticleType.Air;
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_TWO)) particleType = ParticleType.Sand;
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_THREE)) particleType = ParticleType.Water;
 
             world.Update();
 
