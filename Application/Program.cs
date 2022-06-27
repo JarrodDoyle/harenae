@@ -18,29 +18,42 @@ internal static class Program
     private static void Main()
     {
         InitWindow(1280, 720, "Raylib + Dear ImGui app");
-        
+
         ImGuiController.Setup();
-        var uiLayers = new List<BaseUiLayer> {new ExampleLayer {Open = true}};
+        var uiLayers = new List<BaseUiLayer>();
         foreach (BaseUiLayer layer in uiLayers)
             layer.Attach();
+
+        var world = new World(320, 180, 60);
+        SimulationRenderer.EnqueueAction(() => Raylib.ClearBackground(Color.BLACK));
 
         while (!Raylib.WindowShouldClose())
         {
             foreach (BaseUiLayer layer in uiLayers)
                 layer.Update();
 
+            if (Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_LEFT))
+            {
+                var scale = (int) Math.Floor(Math.Min(Raylib.GetScreenWidth() / 320.0f,
+                    Raylib.GetScreenHeight() / 180.0f));
+                var mousePos = Raylib.GetMousePosition() / scale;
+                world.SetSand((int) mousePos.X, (int) mousePos.Y);
+            }
+
+            world.Update();
+
             Raylib.BeginDrawing();
-            
             Raylib.ClearBackground(Color.RAYWHITE);
-            Raylib.DrawFPS(0, 0);
+
+            SimulationRenderer.Render();
 
             ImGuiController.Begin();
             ImGui.DockSpaceOverViewport(ImGui.GetMainViewport(), ImGuiDockNodeFlags.PassthruCentralNode);
-            ImGui.ShowDemoWindow();
             foreach (BaseUiLayer layer in uiLayers)
                 layer.Render();
             ImGuiController.End();
 
+            Raylib.DrawFPS(0, 0);
             Raylib.EndDrawing();
         }
 
