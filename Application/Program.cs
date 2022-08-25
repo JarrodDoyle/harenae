@@ -7,8 +7,8 @@ namespace Application;
 
 internal static class Program
 {
-    private static readonly Color[] Colors = {Color.BLACK, Color.BEIGE, Color.SKYBLUE, Color.LIGHTGRAY, Color.DARKGRAY,  };
-    
+    private static readonly Color[] Colors = { Color.BLACK, Color.BEIGE, Color.SKYBLUE, Color.LIGHTGRAY, Color.DARKGRAY, };
+
     private static void InitWindow(int width, int height, string title)
     {
         Raylib.SetConfigFlags(ConfigFlags.FLAG_MSAA_4X_HINT | ConfigFlags.FLAG_VSYNC_HINT |
@@ -23,9 +23,9 @@ internal static class Program
         InitWindow(1280, 720, "Raylib + Dear ImGui app");
 
         ImGuiController.Setup();
-        var uiLayers = new List<BaseUiLayer>();
-        foreach (BaseUiLayer layer in uiLayers)
-            layer.Attach();
+        var uiPanels = new List<Panel>();
+        foreach (Panel panel in uiPanels)
+            panel.Attach();
 
         var particle = ElementType.Sand;
         var brushSize = 1;
@@ -34,8 +34,8 @@ internal static class Program
 
         while (!Raylib.WindowShouldClose())
         {
-            foreach (BaseUiLayer layer in uiLayers)
-                layer.Update();
+            foreach (Panel panel in uiPanels)
+                panel.Update();
 
             world.Step();
 
@@ -60,13 +60,14 @@ internal static class Program
 
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE)) world.Redraw();
 
+
             foreach (var particlePosition in world.UpdatedParticles)
             {
-                var x = (int) particlePosition.X;
-                var y = (int) particlePosition.Y;
+                var x = (int)particlePosition.X;
+                var y = (int)particlePosition.Y;
                 var element = world.GetElement(x, y);
                 if (element == null) continue;
-                var color = Colors[(int) element];
+                var color = Colors[(int)element];
                 SimulationRenderer.EnqueueAction(() => Raylib.DrawPixel(x, y, color));
             }
 
@@ -77,8 +78,8 @@ internal static class Program
 
             ImGuiController.Begin();
             ImGui.DockSpaceOverViewport(ImGui.GetMainViewport(), ImGuiDockNodeFlags.PassthruCentralNode);
-            foreach (BaseUiLayer layer in uiLayers)
-                layer.Render();
+            foreach (Panel panel in uiPanels)
+                panel.Render();
             ImGuiController.End();
 
             Raylib.DrawFPS(0, 0);
