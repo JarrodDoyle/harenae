@@ -4,8 +4,8 @@ namespace Application;
 
 public enum BrushShape
 {
-    SQUARE,
-    CIRCLE,
+    Square,
+    Circle,
 }
 
 public static class BrushManager
@@ -19,7 +19,7 @@ public static class BrushManager
     {
         Element = ElementType.Sand;
         BrushSize = 1;
-        BrushShape = BrushShape.SQUARE;
+        BrushShape = BrushShape.Square;
     }
 
     public static void DrawBrush(World world, int x, int y)
@@ -30,10 +30,10 @@ public static class BrushManager
 
         switch (BrushShape)
         {
-            case BrushShape.SQUARE:
+            case BrushShape.Square:
                 DrawSquare(world, x, y);
                 break;
-            case BrushShape.CIRCLE:
+            case BrushShape.Circle:
                 break;
         }
     }
