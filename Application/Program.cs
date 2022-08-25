@@ -28,10 +28,10 @@ internal static class Program
         foreach (Panel panel in uiPanels)
             panel.Attach();
 
-        var particle = ElementType.Sand;
-        var brushSize = 1;
         var world = new World(320, 180);
         SimulationRenderer.EnqueueAction(() => Raylib.ClearBackground(Color.BLACK));
+
+        BrushManager.Setup();
 
         while (!Raylib.WindowShouldClose())
         {
@@ -46,18 +46,16 @@ internal static class Program
                     Raylib.GetScreenWidth() / 320.0f, Raylib.GetScreenHeight() / 180.0f));
                 var mousePos = Raylib.GetMousePosition() / scale;
 
-                for (var x = 0; x < brushSize; x++)
-                for (var y = 0; y < brushSize; y++)
-                    world.SetElement((int) mousePos.X + x, (int) mousePos.Y + y, particle);
+                BrushManager.DrawBrush(world, (int)mousePos.X, (int)mousePos.Y);
             }
 
-            if (Raylib.GetMouseWheelMove() < 0) brushSize = Math.Max(1, brushSize - 1);
-            if (Raylib.GetMouseWheelMove() > 0) brushSize = Math.Min(20, brushSize + 1);
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_ONE)) particle = ElementType.Empty;
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_TWO)) particle = ElementType.Sand;
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_THREE)) particle = ElementType.Water;
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_FOUR)) particle = ElementType.Smoke;
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_FIVE)) particle = ElementType.Stone;
+            if (Raylib.GetMouseWheelMove() < 0) BrushManager.BrushSize = Math.Max(1, BrushManager.BrushSize - 1);
+            if (Raylib.GetMouseWheelMove() > 0) BrushManager.BrushSize = Math.Min(20, BrushManager.BrushSize + 1);
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_ONE)) BrushManager.Element = ElementType.Empty;
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_TWO)) BrushManager.Element = ElementType.Sand;
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_THREE)) BrushManager.Element = ElementType.Water;
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_FOUR)) BrushManager.Element = ElementType.Smoke;
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_FIVE)) BrushManager.Element = ElementType.Stone;
 
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE)) world.Redraw();
 
