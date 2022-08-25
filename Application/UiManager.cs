@@ -29,7 +29,7 @@ public static class UiManager
     {
         UI.ImGuiBackend.Begin();
         ImGui.DockSpaceOverViewport(ImGui.GetMainViewport(), ImGuiDockNodeFlags.PassthruCentralNode);
-        ImGui.ShowDemoWindow();
+        // ImGui.ShowDemoWindow();
         foreach (var panel in Panels)
             panel.Render();
         UI.ImGuiBackend.End();
