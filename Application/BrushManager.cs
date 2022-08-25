@@ -24,6 +24,10 @@ public static class BrushManager
 
     public static void DrawBrush(World world, int x, int y)
     {
+        var halfRadius = (int) BrushSize / 2;
+        x -= halfRadius;
+        y -= halfRadius;
+
         switch (BrushShape)
         {
             case BrushShape.SQUARE:
