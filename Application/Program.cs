@@ -22,7 +22,7 @@ internal static class Program
     {
         InitWindow(1280, 720, "Raylib + Dear ImGui app");
 
-        ImGuiController.Setup();
+        ImGuiBackend.Setup();
         var uiPanels = new List<Panel>();
         uiPanels.Add(new BrushSettingsPanel { Open = true });
         foreach (Panel panel in uiPanels)
@@ -56,17 +56,17 @@ internal static class Program
 
             SimulationRenderer.Render();
 
-            ImGuiController.Begin();
+            ImGuiBackend.Begin();
             ImGui.DockSpaceOverViewport(ImGui.GetMainViewport(), ImGuiDockNodeFlags.PassthruCentralNode);
             foreach (Panel panel in uiPanels)
                 panel.Render();
-            ImGuiController.End();
+            ImGuiBackend.End();
 
             Raylib.DrawFPS(0, 0);
             Raylib.EndDrawing();
         }
 
-        ImGuiController.Shutdown();
+        ImGuiBackend.Shutdown();
         Raylib.CloseWindow();
     }
 

@@ -5,7 +5,7 @@ using Raylib_cs;
 
 namespace Application.UI;
 
-public static class ImGuiController
+public static class ImGuiBackend
 {
     private static IntPtr _imGuiContext = IntPtr.Zero;
     private static ImGuiMouseCursor _currentMouseCursor = ImGuiMouseCursor.COUNT;
