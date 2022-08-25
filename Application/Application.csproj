@@ -17,4 +17,10 @@
       <ProjectReference Include="..\Simulation\Simulation.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="Resources\*">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>
