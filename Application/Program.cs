@@ -24,6 +24,7 @@ internal static class Program
 
         ImGuiController.Setup();
         var uiPanels = new List<Panel>();
+        uiPanels.Add(new BrushSettingsPanel { Open = true });
         foreach (Panel panel in uiPanels)
             panel.Attach();
 
