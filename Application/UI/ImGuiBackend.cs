@@ -68,7 +68,7 @@ public static class ImGuiBackend
         _mouseCursorMap[ImGuiMouseCursor.NotAllowed] = MouseCursor.MOUSE_CURSOR_NOT_ALLOWED;
     }
 
-    private static unsafe void ReloadFonts()
+    public static unsafe void ReloadFonts()
     {
         ImGui.SetCurrentContext(_imGuiContext);
         ImGuiIOPtr io = ImGui.GetIO();
