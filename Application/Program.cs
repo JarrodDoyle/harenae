@@ -39,26 +39,7 @@ internal static class Program
                 panel.Update();
 
             world.Step();
-
-            if (Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_LEFT))
-            {
-                var scale = (int) Math.Floor(Math.Min(
-                    Raylib.GetScreenWidth() / 320.0f, Raylib.GetScreenHeight() / 180.0f));
-                var mousePos = Raylib.GetMousePosition() / scale;
-
-                BrushManager.DrawBrush(world, (int)mousePos.X, (int)mousePos.Y);
-            }
-
-            if (Raylib.GetMouseWheelMove() < 0) BrushManager.BrushSize = Math.Max(1, BrushManager.BrushSize - 1);
-            if (Raylib.GetMouseWheelMove() > 0) BrushManager.BrushSize = Math.Min(20, BrushManager.BrushSize + 1);
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_ONE)) BrushManager.Element = ElementType.Empty;
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_TWO)) BrushManager.Element = ElementType.Sand;
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_THREE)) BrushManager.Element = ElementType.Water;
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_FOUR)) BrushManager.Element = ElementType.Smoke;
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_FIVE)) BrushManager.Element = ElementType.Stone;
-
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE)) world.Redraw();
-
+            HandleInput(world);
 
             foreach (var particlePosition in world.UpdatedParticles)
             {
@@ -87,5 +68,35 @@ internal static class Program
 
         ImGuiController.Shutdown();
         Raylib.CloseWindow();
+    }
+
+    private static void HandleInput(World world)
+    {
+        var io = ImGui.GetIO();
+        if (!io.WantCaptureMouse)
+        {
+            if (Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_LEFT))
+            {
+                var xScale = Raylib.GetScreenWidth() / 320.0f;
+                var yScale = Raylib.GetScreenHeight() / 180.0f;
+                var scale = (int)Math.Floor(Math.Min(xScale, yScale));
+                var mousePos = Raylib.GetMousePosition() / scale;
+                BrushManager.DrawBrush(world, (int)mousePos.X, (int)mousePos.Y);
+            }
+
+            if (Raylib.GetMouseWheelMove() < 0) BrushManager.BrushSize = Math.Max(1, BrushManager.BrushSize - 1);
+            if (Raylib.GetMouseWheelMove() > 0) BrushManager.BrushSize = Math.Min(20, BrushManager.BrushSize + 1);
+        }
+    
+        if (!io.WantCaptureKeyboard)
+        {
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_ONE)) BrushManager.Element = ElementType.Empty;
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_TWO)) BrushManager.Element = ElementType.Sand;
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_THREE)) BrushManager.Element = ElementType.Water;
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_FOUR)) BrushManager.Element = ElementType.Smoke;
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_FIVE)) BrushManager.Element = ElementType.Stone;
+
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE)) world.Redraw();
+        }  
     }
 }
