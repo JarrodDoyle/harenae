@@ -6,10 +6,12 @@ public class BrushSettingsPanel : Panel
 {
     public override void Attach()
     {
+        Open = true;
     }
 
     public override void Detach()
     {
+        Open = false;
     }
 
     public override void Render()

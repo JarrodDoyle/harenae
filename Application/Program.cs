@@ -22,21 +22,15 @@ internal static class Program
     {
         InitWindow(1280, 720, "Raylib + Dear ImGui app");
 
-        ImGuiBackend.Setup();
-        var uiPanels = new List<Panel>();
-        uiPanels.Add(new BrushSettingsPanel { Open = true });
-        foreach (Panel panel in uiPanels)
-            panel.Attach();
-
         var world = new World(320, 180);
         SimulationRenderer.EnqueueAction(() => Raylib.ClearBackground(Color.BLACK));
 
         BrushManager.Setup();
+        UiManager.Setup();
 
         while (!Raylib.WindowShouldClose())
         {
-            foreach (Panel panel in uiPanels)
-                panel.Update();
+            UiManager.Update();
 
             world.Step();
             HandleInput(world);
@@ -55,12 +49,7 @@ internal static class Program
             Raylib.ClearBackground(Color.RAYWHITE);
 
             SimulationRenderer.Render();
-
-            ImGuiBackend.Begin();
-            ImGui.DockSpaceOverViewport(ImGui.GetMainViewport(), ImGuiDockNodeFlags.PassthruCentralNode);
-            foreach (Panel panel in uiPanels)
-                panel.Render();
-            ImGuiBackend.End();
+            UiManager.Render();
 
             Raylib.DrawFPS(0, 0);
             Raylib.EndDrawing();
