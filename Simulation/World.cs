@@ -42,11 +42,11 @@ public class World
         // Update falling particles bottom up, then update rising particles top down
         for (var y = _height - 1; y >= 0; y--)
             foreach (var x in xIndices)
-                Element.Step(this, _elements[x, y], x, y, true, false);
+                Element.Step(this, _elements[x, y], x, y, _rnd.Next(0, 2) == 1, false);
 
         for (var y = 0; y < _height; y++)
             foreach (var x in xIndices)
-                Element.Step(this, _elements[x, y], x, y, true, true);
+                Element.Step(this, _elements[x, y], x, y, _rnd.Next(0, 2) == 1, true);
     }
 
     public void SwapElements(int x1, int y1, int x2, int y2)
