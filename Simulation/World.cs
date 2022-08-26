@@ -27,14 +27,25 @@ public class World
         UpdatedParticles.Clear();
         _newElements = (ElementType[,]) _elements.Clone();
 
+        // Update falling particles bottom up, then update rising particles top down
         for (var y = _height - 1; y >= 0; y--)
         {
             if (y % 2 == 0)
                 for (var x = 0; x < _width; x++)
-                    Element.Step(this, _elements[x, y], x, y, true);
+                    Element.Step(this, _elements[x, y], x, y, true, false);
             else
                 for (var x = _width - 1; x >= 0; x--)
-                    Element.Step(this, _elements[x, y], x, y, false);
+                    Element.Step(this, _elements[x, y], x, y, false, false);
+        }
+        
+        for (var y = 0; y < _height; y++)
+        {
+            if (y % 2 == 0)
+                for (var x = 0; x < _width; x++)
+                    Element.Step(this, _elements[x, y], x, y, true, true);
+            else
+                for (var x = _width - 1; x >= 0; x--)
+                    Element.Step(this, _elements[x, y], x, y, false, true);
         }
 
         _elements = _newElements;
