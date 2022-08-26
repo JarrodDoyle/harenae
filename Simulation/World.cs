@@ -8,10 +8,12 @@ public class World
     private readonly int _width;
     private readonly int _height;
     private readonly ElementType[,] _elements;
+    private readonly Random _rnd;
 
     public World(int width, int height)
     {
         UpdatedParticles = new HashSet<Vector2>();
+        _rnd = new Random();
         _width = width;
         _height = height;
         _elements = new ElementType[_width, _height];
@@ -24,26 +26,27 @@ public class World
     {
         UpdatedParticles.Clear();
 
+        // Randomise the order of X updates to give a more natural feel for fluid-like element dispersal
+        var xIndices = new int[_width];
+        for (var i = 0; i < _width; i++)
+        {
+            xIndices[i] = i;
+        }
+
+        for (var i = 0; i < _width - 1; i++)
+        {
+            var j = i + _rnd.Next(_width - i);
+            (xIndices[j], xIndices[i]) = (xIndices[i], xIndices[j]);
+        }
+
         // Update falling particles bottom up, then update rising particles top down
         for (var y = _height - 1; y >= 0; y--)
-        {
-            if (y % 2 == 0)
-                for (var x = 0; x < _width; x++)
-                    Element.Step(this, _elements[x, y], x, y, true, false);
-            else
-                for (var x = _width - 1; x >= 0; x--)
-                    Element.Step(this, _elements[x, y], x, y, false, false);
-        }
-        
+            foreach (var x in xIndices)
+                Element.Step(this, _elements[x, y], x, y, true, false);
+
         for (var y = 0; y < _height; y++)
-        {
-            if (y % 2 == 0)
-                for (var x = 0; x < _width; x++)
-                    Element.Step(this, _elements[x, y], x, y, true, true);
-            else
-                for (var x = _width - 1; x >= 0; x--)
-                    Element.Step(this, _elements[x, y], x, y, false, true);
-        }
+            foreach (var x in xIndices)
+                Element.Step(this, _elements[x, y], x, y, true, true);
     }
 
     public void SwapElements(int x1, int y1, int x2, int y2)
