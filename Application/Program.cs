@@ -28,6 +28,8 @@ internal static class Program
         BrushManager.Setup();
         UiManager.Setup();
 
+        var rnd = new Random();
+
         while (!Raylib.WindowShouldClose())
         {
             UiManager.Update();
@@ -41,7 +43,15 @@ internal static class Program
                 var y = (int)particlePosition.Y;
                 var element = world.GetElement(x, y);
                 if (element == null) continue;
+
                 var color = Colors[(int)element];
+                if (element != ElementType.Empty)
+                {
+                    var noise = rnd.Next(-10, 11);
+                    color.r = (byte) Math.Clamp(color.r + noise, 0, 255);
+                    color.g = (byte) Math.Clamp(color.g + noise, 0, 255);
+                    color.b = (byte) Math.Clamp(color.b + noise, 0, 255);
+                }
                 SimulationRenderer.EnqueueAction(() => Raylib.DrawPixel(x, y, color));
             }
 
