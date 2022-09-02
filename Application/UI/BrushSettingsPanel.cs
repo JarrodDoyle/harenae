@@ -22,10 +22,10 @@ public class BrushSettingsPanel : Panel
         if (ImGui.Begin("Brush Settings", ref open))
         {
             {
-                string[] items = Enum.GetNames(typeof(Simulation.ElementType));
-                var current = (int) BrushManager.Element;
+                string[] items = Simulation.ElementRegistry.GetElementNames();
+                var current = Array.IndexOf(items, BrushManager.Element);
                 if (ImGui.Combo("Element", ref current, items, items.Length))
-                    BrushManager.Element = (Simulation.ElementType)current;
+                    BrushManager.Element = items[current];
             }
             
             {

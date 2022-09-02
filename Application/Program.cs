@@ -2,6 +2,7 @@
 using Raylib_cs;
 using ImGuiNET;
 using Simulation;
+using System.Numerics;
 
 namespace Application;
 
@@ -21,6 +22,12 @@ internal static class Program
     private static void Main()
     {
         InitWindow(1280, 720, "Raylib + Dear ImGui app");
+
+        ElementRegistry.RegisterElement("Empty", new ElementSettings(false, false, false, false, new string[] { }, new Vector4(0, 0, 0, 255)));
+        ElementRegistry.RegisterElement("Sand", new ElementSettings(false, false, true, true, new string[]{"Sand", "Stone"}, new Vector4(211, 176, 131, 255)));
+        ElementRegistry.RegisterElement("Water", new ElementSettings(false, true, true, true, new string[]{"Water", "Sand", "Stone"}, new Vector4(102, 191, 255, 255)));
+        ElementRegistry.RegisterElement("Smoke", new ElementSettings(true, true, true, true, new string[]{"Smoke", "Sand", "Water", "Stone"}, new Vector4(200, 200, 200, 255)));
+        ElementRegistry.RegisterElement("Stone", new ElementSettings(false, false, false, false, new string[]{}, new Vector4(80, 80, 80, 255)));
 
         var world = new World(320, 180);
         SimulationRenderer.EnqueueAction(() => Raylib.ClearBackground(Color.BLACK));
@@ -44,8 +51,9 @@ internal static class Program
                 var element = world.GetElement(x, y);
                 if (element == null) continue;
 
-                var color = Colors[(int)element];
-                if (element != ElementType.Empty)
+                var bc = element.Settings.BaseColour;
+                var color = new Color((int)bc.X, (int)bc.Y, (int)bc.Z, (int)bc.W);
+                if (element.Name != "Empty")
                 {
                     var noise = rnd.Next(-10, 11);
                     color.r = (byte) Math.Clamp(color.r + noise, 0, 255);
@@ -89,11 +97,11 @@ internal static class Program
     
         if (!io.WantCaptureKeyboard)
         {
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_ONE)) BrushManager.Element = ElementType.Empty;
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_TWO)) BrushManager.Element = ElementType.Sand;
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_THREE)) BrushManager.Element = ElementType.Water;
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_FOUR)) BrushManager.Element = ElementType.Smoke;
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_FIVE)) BrushManager.Element = ElementType.Stone;
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_ONE)) BrushManager.Element = "Empty";
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_TWO)) BrushManager.Element = "Sand";
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_THREE)) BrushManager.Element = "Water";
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_FOUR)) BrushManager.Element = "Smoke";
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_FIVE)) BrushManager.Element = "Stone";
 
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_SPACE)) world.Redraw();
         }  

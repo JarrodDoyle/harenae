@@ -10,14 +10,14 @@ public enum BrushShape
 
 public static class BrushManager
 {
-    public static ElementType Element { get; set; }
+    public static string Element { get; set; } = string.Empty;
     public static uint BrushSize { get; set; }
     public static BrushShape BrushShape { get; set; }
 
 
     public static void Setup()
     {
-        Element = ElementType.Sand;
+        Element = "Sand";
         BrushSize = 1;
         BrushShape = BrushShape.Square;
     }
