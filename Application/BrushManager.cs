@@ -11,7 +11,12 @@ public enum BrushShape
 public static class BrushManager
 {
     public static string Element { get; set; } = string.Empty;
-    public static uint BrushSize { get; set; }
+    private static uint _brushSize;
+    public static uint BrushSize
+    {
+        get => _brushSize;
+        set => _brushSize = Math.Clamp(value, 1, 30);
+    }
     public static BrushShape BrushShape { get; set; }
 
 
@@ -24,7 +29,7 @@ public static class BrushManager
 
     public static void DrawBrush(World world, int x, int y)
     {
-        var halfRadius = (int) BrushSize / 2;
+        var halfRadius = (int)BrushSize / 2;
         x -= halfRadius;
         y -= halfRadius;
 
