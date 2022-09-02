@@ -39,7 +39,7 @@ public class BrushSettingsPanel : Panel
                 // TODO: Try working out how to use InputScalar here
                 var size = (int) BrushManager.BrushSize;
                 if (ImGui.InputInt("Size", ref size))
-                    BrushManager.BrushSize = (uint) Math.Clamp(size, 1, 20);
+                    BrushManager.BrushSize = (uint) size;
             }
 
             ImGui.End();

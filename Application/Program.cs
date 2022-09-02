@@ -91,8 +91,8 @@ internal static class Program
                 BrushManager.DrawBrush(world, (int)mousePos.X, (int)mousePos.Y);
             }
 
-            if (Raylib.GetMouseWheelMove() < 0) BrushManager.BrushSize = Math.Max(1, BrushManager.BrushSize - 1);
-            if (Raylib.GetMouseWheelMove() > 0) BrushManager.BrushSize = Math.Min(20, BrushManager.BrushSize + 1);
+            if (Raylib.GetMouseWheelMove() < 0) BrushManager.BrushSize -= 1;
+            if (Raylib.GetMouseWheelMove() > 0) BrushManager.BrushSize += 1;
         }
     
         if (!io.WantCaptureKeyboard)
