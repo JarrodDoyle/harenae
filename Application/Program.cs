@@ -84,11 +84,12 @@ internal static class Program
         {
             if (Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_LEFT))
             {
-                var xScale = Raylib.GetScreenWidth() / 320.0f;
-                var yScale = Raylib.GetScreenHeight() / 180.0f;
-                var scale = (int)Math.Floor(Math.Min(xScale, yScale));
-                var mousePos = Raylib.GetMousePosition() / scale;
-                BrushManager.DrawBrush(world, (int)mousePos.X, (int)mousePos.Y);
+                var sWidth = Raylib.GetScreenWidth();
+                var sHeight = Raylib.GetScreenHeight();
+                var scale = (int) Math.Floor(Math.Min(sWidth / 320.0f, sHeight / 180.0f));
+                var offset = new Vector2((sWidth - 320f * scale) / 2, (sHeight - 180f * scale) / 2);
+                var pos = (Raylib.GetMousePosition() - offset) / scale;
+                BrushManager.DrawBrush(world, (int) pos.X, (int) pos.Y);
             }
 
             if (Raylib.GetMouseWheelMove() < 0) BrushManager.BrushSize -= 1;
