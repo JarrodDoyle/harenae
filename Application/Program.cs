@@ -21,7 +21,7 @@ internal static class Program
 
     private static void Main()
     {
-        InitWindow(1280, 720, "Raylib + Dear ImGui app");
+        InitWindow(1280, 720, "Haranae Editor");
 
         ElementRegistry.RegisterElement("Empty", new ElementSettings(false, false, false, false, new string[] { }, new Vector4(0, 0, 0, 255)));
         ElementRegistry.RegisterElement("Sand", new ElementSettings(false, false, true, true, new string[]{"Sand", "Stone"}, new Vector4(211, 176, 131, 255)));
