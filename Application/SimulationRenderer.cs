@@ -71,5 +71,21 @@ public static class SimulationRenderer
         var height = (int)(scale * Dimensions.Y);
         var dest = new Rectangle((sWidth - width) / 2, (sHeight - height) / 2, width, height);
         Raylib.DrawTexturePro(texture, source, dest, Vector2.Zero, 0, Color.WHITE);
+
+        if (wasDirty) RenderDirtyRect();
+    }
+
+    private static void RenderDirtyRect()
+    {
+        var sWidth = Raylib.GetScreenWidth();
+        var sHeight = Raylib.GetScreenHeight();
+        var scale = (int)Math.Floor(Math.Min(sWidth / Dimensions.X, sHeight / Dimensions.Y));
+        var offset = new Vector2((sWidth - Dimensions.X * scale) / 2, (sHeight - Dimensions.Y * scale) / 2);
+        var min = (DirtyMin - offset) * scale;
+        var max = (DirtyMax - offset) * scale;
+
+        var dims = max - min;
+        var rect = new Rectangle((int)min.X, (int)min.Y, (int)dims.X, (int)dims.Y);
+        Raylib.DrawRectangleLinesEx(rect, 1, Color.GREEN);
     }
 }
