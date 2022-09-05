@@ -9,6 +9,7 @@ public class World
     private readonly int _height;
     private readonly Element[,] _elements;
     private readonly Random _rnd;
+    private readonly int[] _xIndices;
 
     public World(int width, int height)
     {
@@ -20,6 +21,9 @@ public class World
         for (var x = 0; x < _width; x++)
         for (var y = 0; y < _height; y++)
             _elements[x, y] = ElementRegistry.GetElement("Empty");
+        _xIndices = new int[_width];
+        for (var i = 0; i < _width; i++)
+            _xIndices[i] = i;
     }
 
     public void Step()
@@ -27,25 +31,19 @@ public class World
         UpdatedParticles.Clear();
 
         // Randomise the order of X updates to give a more natural feel for fluid-like element dispersal
-        var xIndices = new int[_width];
-        for (var i = 0; i < _width; i++)
-        {
-            xIndices[i] = i;
-        }
-
         for (var i = 0; i < _width - 1; i++)
         {
             var j = i + _rnd.Next(_width - i);
-            (xIndices[j], xIndices[i]) = (xIndices[i], xIndices[j]);
+            (_xIndices[j], _xIndices[i]) = (_xIndices[i], _xIndices[j]);
         }
 
         // Update falling particles bottom up, then update rising particles top down
         for (var y = _height - 1; y >= 0; y--)
-            foreach (var x in xIndices)
+            foreach (var x in _xIndices)
                 _elements[x, y].Step(this, x, y, _rnd.Next(0, 2) == 1, false);
 
         for (var y = 0; y < _height; y++)
-            foreach (var x in xIndices)
+            foreach (var x in _xIndices)
                 _elements[x, y].Step(this, x, y, _rnd.Next(0, 2) == 1, true);
     }
 
