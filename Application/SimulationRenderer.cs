@@ -75,6 +75,24 @@ public static class SimulationRenderer
         if (wasDirty) RenderDirtyRect();
     }
 
+    public static Vector2 ScreenToWorld(Vector2 pos)
+    {
+        var sWidth = Raylib.GetScreenWidth();
+        var sHeight = Raylib.GetScreenHeight();
+        var scale = (int)Math.Floor(Math.Min(sWidth / Dimensions.X, sHeight / Dimensions.Y));
+        var offset = new Vector2((sWidth - Dimensions.X * scale) / 2, (sHeight - Dimensions.Y * scale) / 2);
+        return (pos - offset) / scale;
+    }
+
+    public static Vector2 WorldToScreen(Vector2 pos)
+    {
+        var sWidth = Raylib.GetScreenWidth();
+        var sHeight = Raylib.GetScreenHeight();
+        var scale = (int)Math.Floor(Math.Min(sWidth / Dimensions.X, sHeight / Dimensions.Y));
+        var offset = new Vector2((sWidth - Dimensions.X * scale) / 2, (sHeight - Dimensions.Y * scale) / 2);
+        return (pos * scale) + offset;
+    }
+
     private static void RenderDirtyRect()
     {
         var sWidth = Raylib.GetScreenWidth();
