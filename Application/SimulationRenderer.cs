@@ -64,15 +64,22 @@ public static class SimulationRenderer
 
         var texture = RenderTexture.texture;
         var source = new Rectangle(0, 0, texture.width, texture.height);
-        var sWidth = Raylib.GetScreenWidth();
-        var sHeight = Raylib.GetScreenHeight();
-        var scale = (int)Math.Floor(Math.Min(sWidth / Dimensions.X, sHeight / Dimensions.Y));
-        var width = (int)(scale * Dimensions.X);
-        var height = (int)(scale * Dimensions.Y);
-        var dest = new Rectangle((sWidth - width) / 2, (sHeight - height) / 2, width, height);
+        var pos = WorldToScreen(new Vector2(0, 0));
+        var destDims = WorldToScreen(Dimensions) - pos;
+        var dest = new Rectangle((int)pos.X, (int)pos.Y, (int)destDims.X, (int)destDims.Y);
         Raylib.DrawTexturePro(texture, source, dest, Vector2.Zero, 0, Color.WHITE);
 
         if (wasDirty) RenderDirtyRect();
+    }
+
+    private static void RenderDirtyRect()
+    {
+        var min = WorldToScreen(DirtyMin);
+        var max = WorldToScreen(DirtyMax);
+
+        var dims = max - min;
+        var rect = new Rectangle((int)min.X, (int)min.Y, (int)dims.X, (int)dims.Y);
+        Raylib.DrawRectangleLinesEx(rect, 1, Color.GREEN);
     }
 
     public static Vector2 ScreenToWorld(Vector2 pos)
@@ -91,19 +98,5 @@ public static class SimulationRenderer
         var scale = (int)Math.Floor(Math.Min(sWidth / Dimensions.X, sHeight / Dimensions.Y));
         var offset = new Vector2((sWidth - Dimensions.X * scale) / 2, (sHeight - Dimensions.Y * scale) / 2);
         return (pos * scale) + offset;
-    }
-
-    private static void RenderDirtyRect()
-    {
-        var sWidth = Raylib.GetScreenWidth();
-        var sHeight = Raylib.GetScreenHeight();
-        var scale = (int)Math.Floor(Math.Min(sWidth / Dimensions.X, sHeight / Dimensions.Y));
-        var offset = new Vector2((sWidth - Dimensions.X * scale) / 2, (sHeight - Dimensions.Y * scale) / 2);
-        var min = (DirtyMin * scale) + offset;
-        var max = (DirtyMax * scale) + offset;
-
-        var dims = max - min;
-        var rect = new Rectangle((int)min.X, (int)min.Y, (int)dims.X, (int)dims.Y);
-        Raylib.DrawRectangleLinesEx(rect, 1, Color.GREEN);
     }
 }
