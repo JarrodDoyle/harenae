@@ -30,8 +30,6 @@ internal static class Program
         ElementRegistry.RegisterElement("Stone", new ElementSettings(false, false, false, false, new string[]{}, new Vector4(80, 80, 80, 255)));
 
         var world = new World(320, 180);
-        SimulationRenderer.EnqueueAction(() => Raylib.ClearBackground(Color.BLACK));
-
         BrushManager.Setup();
         UiManager.Setup();
 
@@ -60,7 +58,7 @@ internal static class Program
                     color.g = (byte) Math.Clamp(color.g + noise, 0, 255);
                     color.b = (byte) Math.Clamp(color.b + noise, 0, 255);
                 }
-                SimulationRenderer.EnqueueAction(() => Raylib.DrawPixel(x, y, color));
+                SimulationRenderer.DrawPixel(x, y, color);
             }
 
             Raylib.BeginDrawing();

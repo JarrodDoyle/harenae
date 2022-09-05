@@ -8,30 +8,37 @@ public static class SimulationRenderer
     private static readonly List<Action> DrawQueue;
     private static readonly Vector2 Dimensions;
     private static readonly RenderTexture2D RenderTexture;
+    private static Image Image;
+    private static bool Dirty;
 
     static SimulationRenderer()
     {
         DrawQueue = new List<Action>();
         Dimensions = new Vector2(320, 180);
         RenderTexture = Raylib.LoadRenderTexture((int)Dimensions.X, (int)Dimensions.Y);
-        EnqueueAction(() => Raylib.ClearBackground(Color.BLACK));
+        Image = Raylib.GenImageColor((int)Dimensions.X, (int)Dimensions.Y, Color.BLACK);
+        Dirty = true;
     }
 
-    public static void EnqueueAction(Action renderAction)
+    public static void DrawPixel(int x, int y, Color color)
     {
-        DrawQueue.Add(renderAction);
+        Raylib.ImageDrawPixel(ref Image, x, y, color);
+        Dirty = true;
     }
 
     public static void Render()
     {
-        Raylib.BeginTextureMode(RenderTexture);
-        foreach (var action in DrawQueue)
-            action.Invoke();
-        DrawQueue.Clear();
-        Raylib.EndTextureMode();
-        
+        if (Dirty)
+        {
+            unsafe
+            {
+                Raylib.UpdateTexture(RenderTexture.texture, Image.data);
+            }
+            Dirty = false;
+        }
+
         var texture = RenderTexture.texture;
-        var source = new Rectangle(0, 0, texture.width, -texture.height);
+        var source = new Rectangle(0, 0, texture.width, texture.height);
         var sWidth = Raylib.GetScreenWidth();
         var sHeight = Raylib.GetScreenHeight();
         var scale = (int) Math.Floor(Math.Min(sWidth / Dimensions.X, sHeight / Dimensions.Y));
