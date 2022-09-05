@@ -81,8 +81,8 @@ public static class SimulationRenderer
         var sHeight = Raylib.GetScreenHeight();
         var scale = (int)Math.Floor(Math.Min(sWidth / Dimensions.X, sHeight / Dimensions.Y));
         var offset = new Vector2((sWidth - Dimensions.X * scale) / 2, (sHeight - Dimensions.Y * scale) / 2);
-        var min = (DirtyMin - offset) * scale;
-        var max = (DirtyMax - offset) * scale;
+        var min = (DirtyMin * scale) + offset;
+        var max = (DirtyMax * scale) + offset;
 
         var dims = max - min;
         var rect = new Rectangle((int)min.X, (int)min.Y, (int)dims.X, (int)dims.Y);
