@@ -9,7 +9,6 @@ public class World
     private readonly int _height;
     private readonly Element[,] _elements;
     private readonly Random _rnd;
-    private readonly int[] _xIndices;
 
     public World(int width, int height)
     {
@@ -21,29 +20,51 @@ public class World
         for (var x = 0; x < _width; x++)
         for (var y = 0; y < _height; y++)
             _elements[x, y] = ElementRegistry.GetElement("Empty");
-        _xIndices = new int[_width];
-        for (var i = 0; i < _width; i++)
-            _xIndices[i] = i;
     }
 
     public void Step()
     {
+        if (UpdatedParticles.Count == 0) return;
+
+        // Construct dirtyrect (oof performance?)
+        var dirtyMin = UpdatedParticles.First() - Vector2.One;
+        var dirtyMax = dirtyMin + 2 * Vector2.One;
+        foreach (var pos in UpdatedParticles)
+        {
+            if (pos.X <= dirtyMin.X) dirtyMin.X = pos.X - 1;
+            if (pos.X >= dirtyMax.X) dirtyMax.X = pos.X + 1;
+            if (pos.Y <= dirtyMin.Y) dirtyMin.Y = pos.Y - 1;
+            if (pos.Y >= dirtyMax.Y) dirtyMax.Y = pos.Y + 1;
+        }
+
+        var max = new Vector2(_width - 1, _height - 1);
+        dirtyMin = Vector2.Clamp(dirtyMin, Vector2.Zero, max);
+        dirtyMax = Vector2.Clamp(dirtyMax, Vector2.Zero, max);
+
         UpdatedParticles.Clear();
 
         // Randomise the order of X updates to give a more natural feel for fluid-like element dispersal
-        for (var i = 0; i < _width - 1; i++)
+        var minX = (int) dirtyMin.X;
+        var maxX = (int) dirtyMax.X + 1;
+        var xIndices = new int[maxX - minX];
+        for (var i = 0; i < xIndices.Length; i++)
+            xIndices[i] = minX + i;
+
+        for (var i = 0; i < xIndices.Length - 1; i++)
         {
-            var j = i + _rnd.Next(_width - i);
-            (_xIndices[j], _xIndices[i]) = (_xIndices[i], _xIndices[j]);
+            var j = i + _rnd.Next(xIndices.Length - i);
+            (xIndices[j], xIndices[i]) = (xIndices[i], xIndices[j]);
         }
 
         // Update falling particles bottom up, then update rising particles top down
-        for (var y = _height - 1; y >= 0; y--)
-            foreach (var x in _xIndices)
+        var minY = (int) dirtyMin.Y;
+        var maxY = (int) dirtyMax.Y + 1;
+        for (var y = maxY - 1; y >= minY; y--)
+            foreach (var x in xIndices)
                 _elements[x, y].Step(this, x, y, _rnd.Next(0, 2) == 1, false);
 
-        for (var y = 0; y < _height; y++)
-            foreach (var x in _xIndices)
+        for (var y = minY; y < maxY; y++)
+            foreach (var x in xIndices)
                 _elements[x, y].Step(this, x, y, _rnd.Next(0, 2) == 1, true);
     }
 
