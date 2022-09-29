@@ -41,10 +41,18 @@ public class World
 
         // Update chunks
         UpdatedParticles.Clear();
+        var tasks = new List<Task>();
+        foreach (var (_, chunk) in _chunks)
+        {
+            tasks.Add(Task.Run(() => { chunk.Step(this, _xIndices); }));
+        }
+
+        Task.WaitAll(tasks.ToArray());
+
+        // Gather updated particles outside of tasks because UpdatedParticles doesn't support concurrent access
         foreach (var (chunkPos, chunk) in _chunks)
         {
             var posOffset = chunkPos * _chunkSize;
-            chunk.Step(this, _xIndices);
             foreach (var pos in chunk.UpdatedParticles)
                 UpdatedParticles.Add(pos + posOffset);
         }
@@ -61,8 +69,6 @@ public class World
             var posInChunk1 = GetPositionInChunk(x1, y1);
             var posInChunk2 = GetPositionInChunk(x2, y2);
             chunk.SwapElements(posInChunk1, posInChunk2);
-            UpdatedParticles.Add(new Vector2(x1, y1));
-            UpdatedParticles.Add(new Vector2(x2, y2));
         }
     }
 
