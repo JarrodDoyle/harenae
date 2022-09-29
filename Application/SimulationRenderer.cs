@@ -17,7 +17,7 @@ public static class SimulationRenderer
     static SimulationRenderer()
     {
         DrawQueue = new List<Action>();
-        Dimensions = new Vector2(320, 180);
+        Dimensions = new Vector2(5 * 64, 3 * 64);
         RenderTexture = Raylib.LoadRenderTexture((int)Dimensions.X, (int)Dimensions.Y);
         Image = Raylib.GenImageColor((int)Dimensions.X, (int)Dimensions.Y, Color.BLACK);
         Dirty = true;

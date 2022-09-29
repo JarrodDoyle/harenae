@@ -29,7 +29,7 @@ internal static class Program
         ElementRegistry.RegisterElement("Smoke", new ElementSettings(true, true, true, true, new string[]{"Smoke", "Sand", "Water", "Stone"}, new Vector4(200, 200, 200, 255)));
         ElementRegistry.RegisterElement("Stone", new ElementSettings(false, false, false, false, new string[]{}, new Vector4(80, 80, 80, 255)));
 
-        var world = new World(320, 180);
+        var world = new World(5, 3, 64);
         BrushManager.Setup();
         UiManager.Setup();
 
