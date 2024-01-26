@@ -72,6 +72,7 @@ public static class SimulationRenderer
         if (wasDirty) RenderDirtyRect();
     }
 
+    [System.Diagnostics.Conditional("DEBUG")]
     private static void RenderDirtyRect()
     {
         var min = WorldToScreen(DirtyMin);
