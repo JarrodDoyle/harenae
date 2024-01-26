@@ -1,6 +1,8 @@
-# About
+# Harenae
 
-A simple .NET 6.0 project for creating cross-platform desktop apps/games using Raylib and ImGui.
+![Screenshot of a scene with stone, sand, water, and smoke](/docs/imgs/Overview.png)
+
+Harenae is my first attempt at a [falling sand game](https://en.wikipedia.org/wiki/Falling-sand_game). I got as far as implementing some basic elements (Sand, Water, Stone, and Smoke). There's also some (bad) attempts at a multi-threaded chunk system in a separate branch. Currently working on a new version in Rust.
 
 # Getting Started
 
